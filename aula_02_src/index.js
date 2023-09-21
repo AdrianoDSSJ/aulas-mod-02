@@ -1,38 +1,27 @@
+//importações
 const express = require('express');
+const app = express();
 
-const app = express(3000);
+const { filtrarProfessores, encontrarUmProfessor } = require('./Controladores/professores');
 
-const professores = [
-    {
-        id: 1, nome: 'guido', stack: 'Backend'
-    },
-    {
-        id: 2, nome: 'Dani', stack: 'Frontend'
-    },
-    {
-        id: 3, nome: 'Diego', stack: 'Frontend'
-    },
-    {
-        id: 4, nome: 'Vidal', stack: 'Backend'
-    }
+//intermediarios
+app.use(function (req, resp, next) {
+    console.log('passei no primeiro intermediario');
+    next();
+});
 
-];
-app.get('/professores', function (req, resp) {
-    resp.send(professores);
-})
-
-app.get('/professores/:id', function (req, resp) {
-    let professorEnontrado = 'Não Encontrado';
-    for (const i of professores) {
-        if (i.id === parseInt(req.params.id)) {
-
-            professorEnontrado = i.nome;
-        }
-    }
-    resp.send(professorEnontrado);
-})
+//intermediarios de rota
+function intermediarioDaRota(req, resp, next) {
+    console.log('passei no intermediario de rota');
+    next();
+};
 
 
+
+//funções
+app.get('/professores', intermediarioDaRota, filtrarProfessores);
+
+app.get('/professores/:id', encontrarUmProfessor);
 
 app.get('/', function (req, resp) {
     resp.send('Pagina Inicial!!!');
@@ -40,5 +29,5 @@ app.get('/', function (req, resp) {
 
 
 
-
+//porta para leitura e receber requisição
 app.listen(3000, console.log('aula 02'));
